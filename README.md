@@ -52,7 +52,7 @@ Your algorithm must be a generator function named `run` that accepts the Graph A
 
 ## 💻 Example Code
 
-Here is a standard **Breadth-First Search (BFS)** implementation using the API. Paste this into the editor to see it in action.
+These are some example implementations. Copy them and paste directly into the coding window and Press Run to See the code in Action
 
 **BFS Implementation**
 ```javascript
@@ -127,17 +127,23 @@ const colors = {
         yield; // Pause
 
         let neighbors = G.getNeighbors(u);
-        //The list of neighbors is reversed and appended (only unvisited ones) to the back of the stack
-        neighbors.sort((a, b) => b - a);
         
         for (let v of neighbors) {
             if (!visited.has(v)) {
                 G.colorEdge(u, v, colors.edge);
                 G.colorNode(v, colors.visited);
-                stack.push(v);
                 yield;
             }
         }
+        //The list of neighbors is reversed and appended (only unvisited ones) to the back of the stack
+        neighbors.sort((a, b) => b - a);
+            for (let v of neighbors) {
+                if (!visited.has(v)) {
+                    stack.push(v);
+                }
+        }
+
+                
 
         // Mark node as fully finished
         G.colorNode(u, colors.done);
