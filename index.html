@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script> -->
+    <script src="libraries/p5.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="simuation.js"></script>
+    <meta charset="utf-8" />
+</head>
+
+<body>
+    <div id="app-container">
+
+        <div class="vanilla">
+            <div class="panel">
+                <button id="ResetBTN">Reset</button>
+
+                <div class="control-gp">
+                    <label for="Number_Of_Nodes">Number Of Nodes:</label>
+                    <input type="number" name="Number_Of_Nodes" id="Number_Of_Nodes" min=5 max=25 value=15>
+                </div>
+
+                <div class="control-gp">
+                    <label for="Probability">Probability of Edge Formation:</label>
+                    <input type="range" name="Probability" id="Probability" min=0 max=0.5 step=0.001 value=0.2
+                        oninput="p_out.value = this.value">
+                    <output id="p_out">0.2 </output>
+                </div>
+
+                <label for="graphTEXT">Adjacency List Output:</label>
+                <textarea id="graphTEXT" rows=17></textarea>
+            </div>
+            <div class="code_window">
+                <div class="code-header">
+                    <label>Algorithm Input (JS):</label>
+                    <div>
+                        <button id="ClearBTN">Clear Colors</button>
+                        <button id="RunBTN">Run Algorithm</button>
+                    </div>
+                </div>
+
+                <textarea name="CODE" id="CODE" spellcheck="false">
+function* run(G) {
+// Example: BFS
+
+const colors = {
+    visiting:"#e5c07b", // Gold
+    visited: "#56b6c2", // Cyan
+    done:    "#1a8aef", // Blue
+    edge:    "#e06c75"  // Red
+  };
+
+let start = 0;
+let Q = [start];
+let visited = new Set([start]);
+
+G.log("Starting BFS from " + start);
+G.colorNode(start, colors.visiting);
+yield; // Pause to show start
+
+while(Q.length > 0) {
+    let curr = Q.shift();
+    G.colorNode(curr, colors.visiting);
+    yield; 
+
+    let neighbors = G.getNeighbors(curr);
+    for(let n of neighbors) {
+    if(!visited.has(n)) {
+        visited.add(n);
+        G.colorEdge(curr, n, colors.edge);
+        G.colorNode(n, colors.visited);
+        G.log("Visiting " + n);
+        Q.push(n);
+        yield;
+    }
+    }
+    G.colorNode(curr, colors.done); // Done
+}
+G.log("BFS Completed");
+}
+                </textarea>
+
+                <div id="console-container">
+                    <div for="console-output">Console Output:</div>
+                    <div id="console-output"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="canvas-container"></div>
+    </div>
+
+    <script src="sketch.js"></script>
+</body>
+
+</html>

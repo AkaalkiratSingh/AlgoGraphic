@@ -1,0 +1,17 @@
+.box
+|---> .i1
+|---> .i2;
+
+.box{
+    display: flex;
+}
+
+.i1{
+    width: 60%;
+}
+
+.i2{
+    width: 40%;
+}
+
+these too end up overlapping. idk how? help how should this be corrected. where else shall i look for possible errors.
