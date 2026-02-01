@@ -1,46 +1,110 @@
-function* run(G) {
-  // Example: DFS
 
-const colors = {
-    visiting:"#e5c07b", // Gold
-    visited: "#56b6c2", // Cyan
-    done:    "#1a8aef", // Blue
-    edge:    "#e06c75"  // Red
-  };
+const visualState = {
+    nodeColors: {},
+    edgeColors: {}
+};
 
-  let start = 0;
-  let stack = [start];
-  let visited = new Set();
 
-  G.log("Starting DFS from " + start);
-  G.colorNode(start, colors.visiting);
-  yield; // Pause
-
-  while (stack.length > 0) {
-    let u = stack.pop();
-
-    if (!visited.has(u)) {
-      visited.add(u);
-      
-      G.colorNode(u, colors.visiting);
-      G.log("Visiting " + u);
-      yield; 
-
-      let neighbors = G.getNeighbors(u);
-      
-      for (let v of neighbors) {
-        if (!visited.has(v)) {
-          G.colorEdge(u, v, colors.edge);
-          G.colorNode(v, color.visited);
-          stack.push(v);
-          yield;
-        }
-      }
-
-      // Mark node as fully finished
-      G.colorNode(u, colors.done);
+class GraphAPI {
+    constructor() {
+        this.ops = 0;
     }
-  }
 
-  G.log("DFS Traversal Complete.");
+    _tick() {
+        this.ops++;
+        if (this.ops > 10000) throw new Error("Execution limit exceeded (Infinite Loop?)");
+    }
+
+
+    getNeighbors(id) {
+        this._tick();
+        return edges[id] ? [...edges[id]] : [];
+    }
+
+    getNodeCount() {
+        return nodeCount;
+    }
+
+
+    colorNode(id, color) {
+        this._tick();
+        visualState.nodeColors[id] = color;
+    }
+
+    colorEdge(u, v, color) {
+        this._tick();
+        const key = u < v ? `${u}-${v}` : `${v}-${u}`;
+        visualState.edgeColors[key] = color;
+    }
+
+    resetColors() {
+        visualState.nodeColors = {};
+        visualState.edgeColors = {};
+    }
+
+    log(msg) {
+        const consoleDiv = document.getElementById('console-output');
+        const line = document.createElement('div');
+        line.textContent = `> ${msg}`;
+        consoleDiv.appendChild(line);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight
+    }
 }
+
+let simulationTimer = null;
+
+function runUserAlgorithm() {
+    if (simulationTimer) clearInterval(simulationTimer);
+    const consoleDiv = document.getElementById('console-output');
+    consoleDiv.innerHTML = "";
+
+    const api = new GraphAPI();
+    api.resetColors();
+
+    const rawCode = document.getElementById('CODE').value;
+
+    const wrappedCode = `${rawCode}; return run;`;
+
+    try {
+
+        const generatorFunction = new Function(wrappedCode)();
+        const iterator = generatorFunction(api);
+
+        simulationTimer = setInterval(() => {
+            try {
+                const res = iterator.next();
+
+                if (res.done) {
+                    clearInterval(simulationTimer);
+                    api.log("Finished.\n---------------------");
+                }
+            } catch (runtimeErr) {
+                clearInterval(simulationTimer);
+                api.log("Runtime Error: " + runtimeErr.message);
+                console.error(runtimeErr);
+            }
+        }, 500);
+
+    } catch (syntaxErr) {
+        api.log("Syntax Error: " + syntaxErr.message);
+        api.log("Note: Your function must be named 'run'");
+    }
+}
+
+function clearVisuals() {
+    if (simulationTimer) {
+        clearInterval(simulationTimer);
+        simulationTimer = null
+    }
+
+    visualState.nodeColors = {};
+    visualState.edgeColors = {};
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('RunBTN').addEventListener('click', runUserAlgorithm);
+    document.getElementById('ClearBTN').addEventListener('click', clearVisuals);
+});
+
+// implement a error function which writes a bright red message contrary to the current green message -> just add a class red to the div that needes to append and we will define the needed class in CSS
+//-> add an error if u query the Graph object about a node which does not exist

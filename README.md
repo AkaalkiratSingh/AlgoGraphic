@@ -142,9 +142,7 @@ const colors = {
                     stack.push(v);
                 }
         }
-
-                
-
+        
         // Mark node as fully finished
         G.colorNode(u, colors.done);
     }

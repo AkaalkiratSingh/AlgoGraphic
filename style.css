@@ -196,6 +196,11 @@ input[type="range"] {
     font-weight: bold;
 }
 
+#console-output .red{
+    color: #ff5555;
+    font-weight: bolder;
+}
+
 #canvas-container {
     width: 40%;
     height: 100%;

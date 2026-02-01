@@ -36,6 +36,7 @@ function setup() {
 function draw() {
     background(34);
 
+    genGraphText();
     updateNodes();
     updateT();
     drawEdges(); drawNodes();
@@ -134,6 +135,7 @@ function setupFromText() {
 
     genGraphText();
 }
+
 function updateNodes() {
     if (T < 0.01) return;
 
@@ -292,3 +294,8 @@ function windowResized() {
     let container = select('#canvas-container');
     resizeCanvas(container.width, container.height);
 }
+
+// Making variables accessible to simuation.js
+window.genGraphText = genGraphText;
+window.edges = edges; 
+window.nodeCount = nodeCount;

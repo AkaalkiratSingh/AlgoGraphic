@@ -12,27 +12,84 @@ class GraphAPI {
 
     _tick() {
         this.ops++;
-        if (this.ops > 10000) throw new Error("Execution limit exceeded (Infinite Loop?)");
+        if (this.ops > 10000) {
+            const msg = "Runtime Error: Execution limit exceeded (Infinite Loop?)";
+            this.error(msg);
+            // throw new Error(msg);
+        }
     }
 
+    _validateNode(id) {
+        if (id < 0 || id >= this.getNodeCount()) {
+            const msg = `Runtime Error: Node ID ${id} does not exist.`;
+            this.error(msg);
+            throw new Error(msg);
+        }
+    }
+
+    _checkEdge(u, v) {
+        this._validateNode(u);
+        this._validateNode(v);
+        return edges[u].includes(v);
+    }
 
     getNeighbors(id) {
         this._tick();
+        this._validateNode(id);
         return edges[id] ? [...edges[id]] : [];
     }
 
     getNodeCount() {
-        return nodeCount;
+        return ((typeof nodeCount !== 'undefined') ? nodeCount : 0);
     }
 
+    join(u, v) {
+        this._tick();
+        this._validateNode(u);
+        this._validateNode(v);
+
+        if (u === v) {
+            this.error(`Runtime Error: Cannot join node ${u} to itself.`);
+            // throw new Error(`Runtime Error: Cannot join node ${u} to itself.`);
+        }
+
+        if (this._checkEdge(u, v)) {
+            this.log(`Warning: Edge between ${u} and ${v} already exists.`);
+            return;
+        }
+
+        edges[u].push(v);
+        edges[v].push(u);
+        genGraphText();
+        this.log(`Joined ${u} <--> ${v}`);
+    }
+
+    disconnect(u, v) {
+        this._tick();
+        this._validateNode(u);
+        this._validateNode(v);
+
+        if (!this._checkEdge(u, v)) {
+            this.log(`Warning: No edge exists between ${u} and ${v} to disconnect.`);
+            return;
+        }
+
+        edges[u] = edges[u].filter(n => n !== v);
+        edges[v] = edges[v].filter(n => n !== u);
+        genGraphText();
+        this.log(`Disconnected ${u} -><- ${v}`);
+    }
 
     colorNode(id, color) {
         this._tick();
+        this._validateNode(id);
         visualState.nodeColors[id] = color;
     }
 
     colorEdge(u, v, color) {
         this._tick();
+        this._validateNode(u);
+        this._validateNode(v);
         const key = u < v ? `${u}-${v}` : `${v}-${u}`;
         visualState.edgeColors[key] = color;
     }
@@ -43,11 +100,24 @@ class GraphAPI {
     }
 
     log(msg) {
+        this._print(msg);
+    }
+
+    error(msg) {
+        this._print(msg, 'red');
+        throw new Error(msg);
+    }
+
+    _print(msg, className = "defaultMSG") {
         const consoleDiv = document.getElementById('console-output');
+        if (!consoleDiv) return;
+
         const line = document.createElement('div');
+        if (className) line.classList.add(className);
+
         line.textContent = `> ${msg}`;
         consoleDiv.appendChild(line);
-        consoleDiv.scrollTop = consoleDiv.scrollHeight
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
     }
 }
 
@@ -80,13 +150,13 @@ function runUserAlgorithm() {
                 }
             } catch (runtimeErr) {
                 clearInterval(simulationTimer);
-                api.log("Runtime Error: " + runtimeErr.message);
+                api.error("Runtime Error : " + runtimeErr.message);
                 console.error(runtimeErr);
             }
         }, 500);
 
     } catch (syntaxErr) {
-        api.log("Syntax Error: " + syntaxErr.message);
+        api.error("Syntax Error: " + syntaxErr.message);
         api.log("Note: Your function must be named 'run'");
     }
 }
