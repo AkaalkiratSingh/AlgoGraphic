@@ -50,7 +50,6 @@ class GraphAPI {
 
         if (u === v) {
             this.error(`Runtime Error: Cannot join node ${u} to itself.`);
-            // throw new Error(`Runtime Error: Cannot join node ${u} to itself.`);
         }
 
         if (this._checkEdge(u, v)) {

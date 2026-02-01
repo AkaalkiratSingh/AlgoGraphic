@@ -47,7 +47,8 @@ Your algorithm must be a generator function named `run` that accepts the Graph A
 | **`G.colorEdge(u, v, color)`** | `u` (int), `v` (int), `color` (string) | Colors the edge connecting node `u` and node `v`. Accepts color in Hexcode(RGB) as string |
 | **`G.log(message)`** | `message` (string) | Prints a message to the internal sandbox console. |
 | **`G.resetColors()`** | *none* | Resets all nodes and edges to their default visual state. |
-
+|**`G.join(u, v)`**|`u` (int), `v` (int)|Creates a new undirected edge between node `u` and node `v`. Updates the visual graph immediately.|
+|**`G.disconnect(u, v)`**|`u` (int), `v` (int)|Removes the existing edge between node `u` and node `v`.|
 ---
 
 ## 💻 Example Code
@@ -142,7 +143,7 @@ const colors = {
                     stack.push(v);
                 }
         }
-        
+
         // Mark node as fully finished
         G.colorNode(u, colors.done);
     }

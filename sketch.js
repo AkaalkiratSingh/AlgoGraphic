@@ -36,7 +36,7 @@ function setup() {
 function draw() {
     background(34);
 
-    genGraphText();
+    //genGraphText();
     updateNodes();
     updateT();
     drawEdges(); drawNodes();
