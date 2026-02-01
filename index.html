@@ -42,42 +42,42 @@
 
                 <textarea name="CODE" id="CODE" spellcheck="false">
 function* run(G) {
-// Example: BFS
+    // Example: BFS
 
-const colors = {
-    visiting:"#e5c07b", // Gold
-    visited: "#56b6c2", // Cyan
-    done:    "#1a8aef", // Blue
-    edge:    "#e06c75"  // Red
-  };
+    const colors = {
+        visiting:"#e5c07b", // Gold
+        visited: "#56b6c2", // Cyan
+        done:    "#1a8aef", // Blue
+        edge:    "#e06c75"  // Red
+    };
 
-let start = 0;
-let Q = [start];
-let visited = new Set([start]);
+    let start = 0;   // Starting Position
+    let Q = [start]; // Queue for BFS implementation
+    let visited = new Set([start]); 
 
-G.log("Starting BFS from " + start);
-G.colorNode(start, colors.visiting);
-yield; // Pause to show start
+    G.log("Starting BFS from " + start);
+    G.colorNode(start, colors.visiting);
+    yield; // Pause to show start
 
-while(Q.length > 0) {
-    let curr = Q.shift();
-    G.colorNode(curr, colors.visiting);
-    yield; 
+    while(Q.length > 0) {
+        let curr = Q.shift(); 
+        G.colorNode(curr, colors.visiting); // Color the Current node to be Golden 
+        yield; // Pause
 
-    let neighbors = G.getNeighbors(curr);
-    for(let n of neighbors) {
-    if(!visited.has(n)) {
-        visited.add(n);
-        G.colorEdge(curr, n, colors.edge);
-        G.colorNode(n, colors.visited);
-        G.log("Visiting " + n);
-        Q.push(n);
-        yield;
+        let neighbors = G.getNeighbors(curr); // Find the neighbours of the current node
+        for(let n of neighbors) {
+            if(!visited.has(n)) {
+                visited.add(n);
+                G.colorEdge(curr, n, colors.edge); // Color the currently traversed edge
+                G.colorNode(n, colors.visited);
+                G.log("Visiting " + n);
+                Q.push(n);
+                yield; // Pause
+            }
+        }
+        G.colorNode(curr, colors.done);
     }
-    }
-    G.colorNode(curr, colors.done); // Done
-}
-G.log("BFS Completed");
+    G.log("BFS Completed");
 }
                 </textarea>
 

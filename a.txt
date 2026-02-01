@@ -1,17 +1,46 @@
-.box
-|---> .i1
-|---> .i2;
+function* run(G) {
+  // Example: DFS
 
-.box{
-    display: flex;
+const colors = {
+    visiting:"#e5c07b", // Gold
+    visited: "#56b6c2", // Cyan
+    done:    "#1a8aef", // Blue
+    edge:    "#e06c75"  // Red
+  };
+
+  let start = 0;
+  let stack = [start];
+  let visited = new Set();
+
+  G.log("Starting DFS from " + start);
+  G.colorNode(start, colors.visiting);
+  yield; // Pause
+
+  while (stack.length > 0) {
+    let u = stack.pop();
+
+    if (!visited.has(u)) {
+      visited.add(u);
+      
+      G.colorNode(u, colors.visiting);
+      G.log("Visiting " + u);
+      yield; 
+
+      let neighbors = G.getNeighbors(u);
+      
+      for (let v of neighbors) {
+        if (!visited.has(v)) {
+          G.colorEdge(u, v, colors.edge);
+          G.colorNode(v, color.visited);
+          stack.push(v);
+          yield;
+        }
+      }
+
+      // Mark node as fully finished
+      G.colorNode(u, colors.done);
+    }
+  }
+
+  G.log("DFS Traversal Complete.");
 }
-
-.i1{
-    width: 60%;
-}
-
-.i2{
-    width: 40%;
-}
-
-these too end up overlapping. idk how? help how should this be corrected. where else shall i look for possible errors.
