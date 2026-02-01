@@ -61,6 +61,7 @@ class GraphAPI {
         edges[v].push(u);
         genGraphText();
         this.log(`Joined ${u} <--> ${v}`);
+        T = width / 10;
     }
 
     disconnect(u, v) {
@@ -77,6 +78,8 @@ class GraphAPI {
         edges[v] = edges[v].filter(n => n !== u);
         genGraphText();
         this.log(`Disconnected ${u} -><- ${v}`);
+        T = width / 10;
+
     }
 
     colorNode(id, color) {

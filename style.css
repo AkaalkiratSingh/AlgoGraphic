@@ -11,6 +11,7 @@
 
     --consoleBG: #181a1f;
     --consoleGreen: #64dd0e;
+    --consoleRed: #ff5555;
 
 }
 
@@ -168,7 +169,8 @@ input[type="range"] {
     font-weight: bold;
     margin-right: 10px;
 }
-#ClearBTN:hover{
+
+#ClearBTN:hover {
     background-color: var(--HoverBlue);
 }
 
@@ -196,8 +198,8 @@ input[type="range"] {
     font-weight: bold;
 }
 
-#console-output .red{
-    color: #ff5555;
+#console-output .red {
+    color: var(--consoleRed);
     font-weight: bolder;
 }
 
